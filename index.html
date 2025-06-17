@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Falcon LLM Chat</title>
+</head>
+<body>
+  <h2>Text Chat</h2>
+  <input id="textInput" placeholder="Ask something..." />
+  <button onclick="sendText()">Send</button>
+  <p id="textResponse"></p>
+
+  <h2>Multimodal Chat (Text + Image)</h2>
+  <input id="multiText" placeholder="Describe image..." />
+  <input type="file" id="imageInput" />
+  <button onclick="sendMultimodal()">Send</button>
+  <p id="multiResponse"></p>
+
+  <script>
+    async function sendText() {
+      const text = document.getElementById("textInput").value;
+      const res = await fetch("http://localhost:8000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_input: text })
+      });
+      const data = await res.json();
+      document.getElementById("textResponse").innerText = data.response;
+    }
+
+    async function sendMultimodal() {
+      const formData = new FormData();
+      formData.append("user_text", document.getElementById("multiText").value);
+      formData.append("file", document.getElementById("imageInput").files[0]);
+
+      const res = await fetch("http://localhost:8000/multi-chat", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      document.getElementById("multiResponse").innerText = data.response;
+    }
+  </script>
+</body>
+</html>
