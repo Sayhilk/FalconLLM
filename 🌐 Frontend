@@ -1,0 +1,26 @@
+
+---
+
+## ☁️ Deploy on Cloud
+
+### 🟣 Option 1: Hugging Face Spaces (Gradio UI only)
+
+Falcon 7B is available via Inference Endpoints or Spaces:
+1. Go to [https://huggingface.co/spaces](https://huggingface.co/spaces)
+2. Click “**Create new Space**”
+3. Choose:
+   - SDK: **Gradio**
+   - Hardware: **GPU (if needed)**
+
+4. Paste this in `app.py` (use Falcon via pipeline):
+```python
+import gradio as gr
+from transformers import pipeline
+
+pipe = pipeline("text-generation", model="tiiuae/falcon-7b-instruct")
+
+def chat(input_text):
+    result = pipe(input_text, max_new_tokens=150)[0]['generated_text']
+    return result
+
+gr.Interface(fn=chat, inputs="text", outputs="text", title="Falcon Chat").launch()
